@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_19_143644) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_19_221126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -40,6 +40,35 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_143644) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "contratos", force: :cascade do |t|
+    t.bigint "lote_id", null: false
+    t.bigint "cliente_id", null: false
+    t.datetime "data_inicio"
+    t.integer "qnt_parcelas"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cliente_id"], name: "index_contratos_on_cliente_id"
+    t.index ["lote_id"], name: "index_contratos_on_lote_id"
+  end
+
+  create_table "loteamentos", force: :cascade do |t|
+    t.string "nome"
+    t.string "registro"
+    t.string "tamanho"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lotes", force: :cascade do |t|
+    t.bigint "loteamento_id", null: false
+    t.integer "numero"
+    t.float "valor"
+    t.integer "tamanho"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["loteamento_id"], name: "index_lotes_on_loteamento_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -64,4 +93,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_143644) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "contratos", "clientes"
+  add_foreign_key "contratos", "lotes"
+  add_foreign_key "lotes", "loteamentos"
 end

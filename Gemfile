@@ -55,3 +55,5 @@ gem "devise_token_auth", "~> 1.2"
 gem "active_model_serializers", "~> 0.10.13"
 
 gem "rack-cors", "~> 2.0"
+
+gem "faker", "~> 3.2"
