@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_19_060443) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_19_143644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -29,6 +29,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_060443) do
   create_enum "factor_type", ["totp", "webauthn"]
   create_enum "key_status", ["default", "valid", "invalid", "expired"]
   create_enum "key_type", ["aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf", "secretbox", "secretstream", "stream_xchacha20"]
+
+  create_table "clientes", force: :cascade do |t|
+    t.string "nome"
+    t.string "cpf_cnpj"
+    t.string "data_nascimento"
+    t.string "celular"
+    t.string "endereco"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
