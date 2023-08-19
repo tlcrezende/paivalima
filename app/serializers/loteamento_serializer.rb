@@ -1,5 +1,5 @@
 class LoteamentoSerializer < ActiveModel::Serializer
-  attributes :id, :nome, :registro, :tamanho, :lotes, :qnt_lotes, :qtd_lotes_com_contrato, :valor
+  attributes :id, :nome, :registro, :tamanho, :lotes, :qnt_lotes, :qnt_lotes_com_contrato, :valor
   def lotes
     object.lotes if instance_options[:show_lotes]
     'depois pesquiso como remover' if !instance_options[:show_lotes]
@@ -10,8 +10,8 @@ class LoteamentoSerializer < ActiveModel::Serializer
     object.lotes.count 
   end
 
-  def qtd_lotes_com_contrato
-    object.lotes.count
+  def qnt_lotes_com_contrato
+    object.lotes.contratos.count
   end
 
   def valor 
