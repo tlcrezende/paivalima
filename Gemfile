@@ -47,3 +47,5 @@ group :development do
 end
 
 gem 'dotenv-rails'
+
+gem "byebug", "~> 11.1"
