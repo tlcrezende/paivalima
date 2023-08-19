@@ -1,6 +1,6 @@
-class ClientesController < ApplicationController
+class Api::ClientesController < ApplicationController
   before_action :set_cliente, only: %i[ show update destroy ]
-  before_action :authenticate_user!
+  before_action :authenticate_api_user!
 
   # GET /clientes
   def index
