@@ -10,7 +10,7 @@ class Api::LotesController < ApplicationController
 
   # GET /lotes/1
   def show
-    render json: @lote
+    render json: @lote, serializer: LotesSerializer, show_lotes: true
   end
 
   # POST /lotes

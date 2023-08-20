@@ -10,7 +10,7 @@ class Api::LoteamentosController < ApplicationController
 
   # GET /loteamentos/1
   def show
-    render json: @loteamento,serializer: LoteamentoSerializer, show_lotes: true
+    render json: @loteamento, serializer: LoteamentoSerializer, show_lotes: true
   end
 
   # POST /loteamentos

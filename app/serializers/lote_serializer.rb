@@ -1,9 +1,13 @@
 class LoteSerializer < ActiveModel::Serializer
-  attributes :id, :numero, :valor, :tamanho, :qtde_pagamentos_recebidos, :qtde_pagamentos, :valor_recebido, :contratos
+  attributes :id, :numero, :valor, :tamanho, :loteamento_nome, :qtde_pagamentos_recebidos, :qtde_pagamentos, :valor_recebido, :contratos
 
-  has_one :loteamento
+  def loteamento_nome
+    object.loteamento.nome
+  end
 
   def contratos
+    return nil unless instance_options[:show_contratos].present?
+
     # Condição de vigencia do contrato: quitado ou com algum pagamento futuro.
     object.contratos.map do |contrato|
       {
@@ -18,14 +22,20 @@ class LoteSerializer < ActiveModel::Serializer
   end
 
   def qtde_pagamentos_recebidos
+    return nil unless instance_options[:show_contratos].present?
+
     object.pagamentos.filter(&:data_pagamento).size
   end
 
   def qtde_pagamentos
+    return nil unless instance_options[:show_contratos].present?
+
     object.pagamentos.size
   end
 
   def valor_recebido
+    return nil unless instance_options[:show_contratos].present?
+
     object.pagamentos.filter(&:data_pagamento).sum(&:valor)
   end
 end
