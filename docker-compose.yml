@@ -7,3 +7,4 @@ services:
       - .:/paivalima
     ports:
       - "3000:3000"
+    entrypoint: ./entrypoints/entrypoint-development.sh

@@ -11,10 +11,13 @@ RUN bundle install
 COPY . /paivalima
 
 # Add a script to be executed every time the container starts.
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+RUN chmod +x ./entrypoints/docker-entrypoint.sh
+RUN chmod +x ./entrypoints/entrypoint-development.sh
+
+# Change timezone
+ENV TZ=America/Sao_Paulo
+
+ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]
+
 EXPOSE 3000
 
-# # Start the main process.
-# CMD ["rails", "server", "-b", "0.0.0.0"]
