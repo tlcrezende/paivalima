@@ -47,3 +47,50 @@
 #     end
 #   end
 # end
+
+
+
+# Cliente.all.count.times do |cliente| 
+#   p "Criando novo pagamento para o cliente #{cliente + 12}"
+#   start_date = Date.new(2022, 1, 1)
+#   contrato = Cliente.find(cliente + 12).contratos.first
+#   12.times do |i| 
+#     p 'Criando novo pagamento...'
+#     Pagamento.create(
+#       contrato_id:contrato.id, 
+#       cliente_id: contrato.cliente_id, 
+#       lote_id: contrato.lote_id,
+#       data_vencimento: start_date.advance(months: i), 
+#       data_pagamento: Faker::Date.between(from: start_date.advance(months: i), to: start_date.advance(months: i+1)),
+#       valor: 1000, 
+#       identificador: Faker::Number.number(digits: 6))
+#   end
+# end
+
+# pagamentos = []
+# Cliente.all.count.times do |cliente| 
+#   p "Criando novo pagamento para o cliente #{cliente + 12}"
+#   start_date = Date.new(2023, 1, 1)
+#   client_start_id = Cliente.first.id
+#   contratos = Cliente.find(client_start_id + cliente).contratos
+#   contratos.each do |contrato| 
+#     12.times do |i| 
+#       p 'Criando novo pagamento...'
+#       pagamentos << {
+#         contrato_id: contrato.id,
+#         cliente_id: contrato.cliente_id, 
+#         lote_id: contrato.lote_id,
+#         data_vencimento: start_date.advance(months: i), 
+#         data_pagamento: Faker::Date.between(from: start_date.advance(months: i), to: start_date.advance(months: i+1)) > Date.today ? nil : Faker::Date.between(from: start_date.advance(months: i), to: start_date.advance(months: i+1)),
+#         valor: 1000, 
+#         identificador: Faker::Number.number(digits: 6)
+#       }
+#     end
+#   end
+# end
+# p pagamentos.count
+# p 'inserindo pagamentos'
+# Pagamento.insert_all(pagamentos)
+# p 'fim'
+
+

@@ -5,9 +5,6 @@ Rails.application.routes.draw do
     resources :loteamentos
     resources :lotes
     resources :contratos
-  end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+    resources :pagamentos
+    end
 end

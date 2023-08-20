@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_19_221126) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_19_223753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -69,6 +69,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_221126) do
     t.index ["loteamento_id"], name: "index_lotes_on_loteamento_id"
   end
 
+  create_table "pagamentos", force: :cascade do |t|
+    t.bigint "contrato_id", null: false
+    t.bigint "cliente_id", null: false
+    t.bigint "lote_id", null: false
+    t.datetime "data_vencimento"
+    t.float "valor"
+    t.string "status"
+    t.string "identificador"
+    t.datetime "data_pagamento"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cliente_id"], name: "index_pagamentos_on_cliente_id"
+    t.index ["contrato_id"], name: "index_pagamentos_on_contrato_id"
+    t.index ["lote_id"], name: "index_pagamentos_on_lote_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -96,4 +112,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_221126) do
   add_foreign_key "contratos", "clientes"
   add_foreign_key "contratos", "lotes"
   add_foreign_key "lotes", "loteamentos"
+  add_foreign_key "pagamentos", "clientes"
+  add_foreign_key "pagamentos", "contratos"
+  add_foreign_key "pagamentos", "lotes"
 end
