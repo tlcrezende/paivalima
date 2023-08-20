@@ -93,4 +93,13 @@
 # Pagamento.insert_all(pagamentos)
 # p 'fim'
 
+Pagamento.all.each do |pagamento|
+  p 'Atualizando pagamentos...'
+  aleatorio = [1, 2, 3].sample
+  status = 'Pago' if aleatorio == 1
+  status = "Pendente" if aleatorio == 2
+  status = "Atrasado" if aleatorio == 3
+  pagamento.update(status: status)
+end
+
 
