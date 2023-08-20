@@ -3,4 +3,6 @@ class Contrato < ApplicationRecord
   belongs_to :cliente
 
   has_many :pagamentos
+
+  has_many_attached :images
 end

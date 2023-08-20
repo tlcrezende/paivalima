@@ -12,6 +12,7 @@ module Paivalima
     config.load_defaults 7.0
 
     config.action_controller.perform_caching = false
+    config.active_storage.service = :amazon
 
     # Configuration for the application, engines, and railties goes here.
     #

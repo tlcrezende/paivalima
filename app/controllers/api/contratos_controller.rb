@@ -38,6 +38,10 @@ class Api::ContratosController < ApplicationController
     @contrato.destroy
   end
 
+  def upload
+    byebug
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_contrato

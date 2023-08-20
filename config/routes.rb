@@ -6,5 +6,7 @@ Rails.application.routes.draw do
     resources :lotes
     resources :contratos
     resources :pagamentos
-    end
+
+    post 'contratos/upload', to: 'contratos#upload'
+  end
 end
