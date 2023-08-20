@@ -1,11 +1,13 @@
 class Api::LotesController < ApplicationController
+  include Paginable
+
   before_action :set_lote, only: %i[ show update destroy ]
 
   # GET /lotes
   def index
-    @lotes = Lote.all
+    @lotes = Lote.page(current_page).per(per_page)
 
-    render json: @lotes
+    render json: @lotes, meta: meta_attributes(@lotes), adapter: :json
   end
 
   # GET /lotes/1
