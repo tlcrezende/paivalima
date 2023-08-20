@@ -18,8 +18,8 @@ class LoteamentoSerializer < ActiveModel::Serializer
     object.lotes.sum(:valor)
   end
 
+  Contrato.includes(:lote, :pagamentos)
   def valor_arrecadado
-    Contrato.includes(:lote, :pagamentos)
-    object.lotes.map(&:contratos).flatten.map(&:pagamentos).flatten.sum(&:valor)
+    object.lotes.includes(contratos: :pagamentos).map(&:contratos).flatten.map(&:pagamentos).flatten.sum(&:valor)
   end
 end
