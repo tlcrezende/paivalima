@@ -1,19 +1,19 @@
-module Paginable 
-  protected 
+module Paginable
+  protected
 
-  def current_page 
+  def current_page
     (params[:page] || 1).to_i
   end
 
-  def per_page 
+  def per_page
     (params[:per_page] || 5).to_i
   end
 
-  def meta_attributes(collection, extra_meta= {})
+  def meta_attributes(collection, extra_meta = {})
     {
       current_page: collection.current_page,
       total_items: collection.total_count,
-      items_per_page: collection.limit_value,
+      items_per_page: collection.limit_value
     }.merge(extra_meta)
   end
 end

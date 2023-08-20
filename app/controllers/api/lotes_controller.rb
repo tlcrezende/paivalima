@@ -5,6 +5,7 @@ class Api::LotesController < ApplicationController
 
   # GET /lotes
   def index
+    filters = params[:filters]&.values
     @lotes = Lote.page(current_page).per(per_page)
 
     render json: @lotes, meta: meta_attributes(@lotes), adapter: :json
@@ -12,7 +13,7 @@ class Api::LotesController < ApplicationController
 
   # GET /lotes/1
   def show
-    render json: @lote, serializer: LotesSerializer, show_lotes: true
+    render json: @lote, serializer: LoteSerializer, show_contratos: true
   end
 
   # POST /lotes
@@ -20,7 +21,7 @@ class Api::LotesController < ApplicationController
     @lote = Lote.new(lote_params)
 
     if @lote.save
-      render json: @lote, status: :created, location: @lote
+      render json: @lote, status: :created
     else
       render json: @lote.errors, status: :unprocessable_entity
     end
