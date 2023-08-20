@@ -1,11 +1,13 @@
 class Api::PagamentosController < ApplicationController
+  include Paginable
+  
   before_action :set_pagamento, only: %i[ show update destroy ]
 
   # GET /pagamentos
   def index
-    @pagamentos = Pagamento.all
+    @pagamentos = Pagamento.page(current_page).per(per_page)
 
-    render json: @pagamentos
+    render json: @pagamentos, meta: meta_attributes(@pagamentos), adapter: :json
   end
 
   # GET /pagamentos/1

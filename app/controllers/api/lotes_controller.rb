@@ -5,7 +5,6 @@ class Api::LotesController < ApplicationController
 
   # GET /lotes
   def index
-    filters = params[:filters]&.values
     @lotes = Lote.page(current_page).per(per_page)
 
     render json: @lotes, meta: meta_attributes(@lotes), adapter: :json
