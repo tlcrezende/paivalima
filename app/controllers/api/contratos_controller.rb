@@ -1,11 +1,13 @@
 class Api::ContratosController < ApplicationController
+  include Paginable
+
   before_action :set_contrato, only: %i[ show update destroy ]
 
   # GET /contratos
   def index
-    @contratos = Contrato.all
+    @contratos = Contrato.page(current_page).per(per_page)
 
-    render json: @contratos
+    render json: @contratos, meta: meta_attributes(@contratos), adapter: :json
   end
 
   # GET /contratos/1
