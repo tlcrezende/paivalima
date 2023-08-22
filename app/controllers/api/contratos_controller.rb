@@ -1,7 +1,7 @@
 class Api::ContratosController < ApplicationController
   include Paginable
 
-  before_action :set_contrato, only: %i[ show update destroy ]
+  before_action :set_contrato, only: %i[show update destroy]
 
   # GET /contratos
   def index
@@ -41,17 +41,28 @@ class Api::ContratosController < ApplicationController
   end
 
   def upload
-    byebug
+    render json: {
+      pagamentos_processados: [
+        {
+          cliente_nome: 'João da Silva',
+          data_pagamento: '2021-01-01',
+          valor: 100.00,
+          valor_recebido: 100.00,
+          data_vencimento: '2021-01-01'
+        }
+      ]
+    }
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_contrato
-      @contrato = Contrato.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def contrato_params
-      params.require(:contrato).permit(:lote_id, :cliente_id, :data_inicio, :datetime, :qnt_parcelas, :integer)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_contrato
+    @contrato = Contrato.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def contrato_params
+    params.require(:contrato).permit(:lote_id, :cliente_id, :data_inicio, :datetime, :qnt_parcelas, :integer)
+  end
 end
