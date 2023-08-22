@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_19_223753) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_22_005749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -29,6 +29,34 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_223753) do
   create_enum "factor_type", ["totp", "webauthn"]
   create_enum "key_status", ["default", "valid", "invalid", "expired"]
   create_enum "key_type", ["aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf", "secretbox", "secretstream", "stream_xchacha20"]
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "clientes", force: :cascade do |t|
     t.string "nome"
@@ -85,6 +113,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_223753) do
     t.index ["lote_id"], name: "index_pagamentos_on_lote_id"
   end
 
+  create_table "planilhas", force: :cascade do |t|
+    t.datetime "data"
+    t.integer "tipo"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_planilhas_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -109,10 +146,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_223753) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contratos", "clientes"
   add_foreign_key "contratos", "lotes"
   add_foreign_key "lotes", "loteamentos"
   add_foreign_key "pagamentos", "clientes"
   add_foreign_key "pagamentos", "contratos"
   add_foreign_key "pagamentos", "lotes"
+  add_foreign_key "planilhas", "users"
 end

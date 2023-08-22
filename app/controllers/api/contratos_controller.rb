@@ -12,7 +12,7 @@ class Api::ContratosController < ApplicationController
 
   # GET /contratos/1
   def show
-    render json: @contrato
+    render json: @contrato, serializer: ContratoSerializer, show_pagamentos: true
   end
 
   # POST /contratos

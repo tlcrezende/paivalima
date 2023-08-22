@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     resources :lotes
     resources :contratos
     resources :pagamentos
+    resources :exportacoes, only: [:create]
 
     post 'contratos/upload', to: 'contratos#upload'
   end
