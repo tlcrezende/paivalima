@@ -1,3 +1,6 @@
+require 'csv'
+require 'roo'
+
 class Api::ContratosController < ApplicationController
   include Paginable
 
@@ -41,16 +44,21 @@ class Api::ContratosController < ApplicationController
   end
 
   def upload
+    tmpfile = Tempfile.new.binmode
+    tmpfile << Base64.decode64(params[:file])
+    tmpfile.rewind
+    xlsx = Roo::Spreadsheet.open(tmpfile.path, extension: :xlsx)
+
+    pagamentos = []
+    xlsx.sheets.each do |sheet_name|
+      sheet = xlsx.sheet(sheet_name)
+      sheet.each_row_streaming(offset: 2) do |row|
+        pagamentos << row.map(&:value)
+      end
+    end
+
     render json: {
-      pagamentos_processados: [
-        {
-          cliente_nome: 'João da Silva',
-          data_pagamento: '2021-01-01',
-          valor: 100.00,
-          valor_recebido: 100.00,
-          data_vencimento: '2021-01-01'
-        }
-      ]
+      pagamentos_processados: pagamentos
     }
   end
 
