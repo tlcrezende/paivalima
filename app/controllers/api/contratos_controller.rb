@@ -43,25 +43,6 @@ class Api::ContratosController < ApplicationController
     @contrato.destroy
   end
 
-  def upload
-    tmpfile = Tempfile.new.binmode
-    tmpfile << Base64.decode64(params[:file])
-    tmpfile.rewind
-    xlsx = Roo::Spreadsheet.open(tmpfile.path, extension: :xlsx)
-
-    pagamentos = []
-    xlsx.sheets.each do |sheet_name|
-      sheet = xlsx.sheet(sheet_name)
-      sheet.each_row_streaming(offset: 2) do |row|
-        pagamentos << row.map(&:value)
-      end
-    end
-
-    render json: {
-      pagamentos_processados: pagamentos
-    }
-  end
-
   private
 
   # Use callbacks to share common setup or constraints between actions.

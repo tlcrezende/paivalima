@@ -7,7 +7,6 @@ Rails.application.routes.draw do
     resources :contratos
     resources :pagamentos
     resources :exportacoes, only: [:create]
-
-    post 'contratos/upload', to: 'contratos#upload'
+    resources :importacoes, only: %i[index create show]
   end
 end
