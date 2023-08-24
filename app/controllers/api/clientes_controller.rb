@@ -1,12 +1,14 @@
 class Api::ClientesController < ApplicationController
-  before_action :set_cliente, only: %i[ show update destroy ]
+  include Paginable
+
+  before_action :set_cliente, only: %i[show update destroy]
   before_action :authenticate_api_user!
 
   # GET /clientes
   def index
-    @clientes = Cliente.all
+    @clientes = Cliente.page(current_page).per(per_page)
 
-    render json: @clientes
+    render json: @clientes, meta: meta_attributes(@clientes), adapter: :json
   end
 
   # GET /clientes/1
@@ -40,13 +42,14 @@ class Api::ClientesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_cliente
-      @cliente = Cliente.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def cliente_params
-      params.require(:cliente).permit(:nome, :cpf_cnpj, :data_nascimento, :celular, :endereco)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_cliente
+    @cliente = Cliente.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def cliente_params
+    params.require(:cliente).permit(:nome, :cpf_cnpj, :data_nascimento, :celular, :endereco)
+  end
 end
