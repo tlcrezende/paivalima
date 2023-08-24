@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_22_212833) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_24_034836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -81,6 +81,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_212833) do
     t.index ["lote_id"], name: "index_contratos_on_lote_id"
   end
 
+  create_table "importacoes", force: :cascade do |t|
+    t.string "nome"
+    t.string "seu_numero"
+    t.string "nosso_numero"
+    t.float "valor"
+    t.float "valor_pago"
+    t.datetime "data_vencimento"
+    t.string "situacao"
+    t.datetime "data_referencia"
+    t.bigint "user_id", null: false
+    t.bigint "planilha_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["planilha_id"], name: "index_importacoes_on_planilha_id"
+    t.index ["user_id"], name: "index_importacoes_on_user_id"
+  end
+
   create_table "loteamentos", force: :cascade do |t|
     t.string "nome"
     t.string "registro"
@@ -111,6 +128,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_212833) do
     t.datetime "data_pagamento"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "ordem"
     t.index ["cliente_id"], name: "index_pagamentos_on_cliente_id"
     t.index ["contrato_id"], name: "index_pagamentos_on_contrato_id"
     t.index ["lote_id"], name: "index_pagamentos_on_lote_id"
@@ -153,6 +171,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_212833) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contratos", "clientes"
   add_foreign_key "contratos", "lotes"
+  add_foreign_key "importacoes", "planilhas"
+  add_foreign_key "importacoes", "users"
   add_foreign_key "lotes", "loteamentos"
   add_foreign_key "pagamentos", "clientes"
   add_foreign_key "pagamentos", "contratos"

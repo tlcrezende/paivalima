@@ -3,6 +3,8 @@ require 'roo'
 class Api::ImportacoesController < ApplicationController
   include Paginable
 
+  before_action :authenticate_api_user!
+
   def index
     @planilhas = Planilha.where(tipo: :importacao_caixa).page(current_page).per(per_page)
 
@@ -10,42 +12,16 @@ class Api::ImportacoesController < ApplicationController
   end
 
   def create
-    tmpfile = Tempfile.new.binmode
-    tmpfile << Base64.decode64(params[:file])
-    tmpfile.rewind
-    xlsx = Roo::Spreadsheet.open(tmpfile.path, extension: :xlsx)
-
-    # Definir função de validação da sheet
-    # 1 - Verificar headerRow - Deve ser idêntica
-    # 2 - Filtrar resultados com valor pago
-    # 3 - Parse nas tipagens para garantir consistência no banco
-
-    pagamentos = []
-    headers = ['Nome', 'Seu Número', 'Nosso Numero', 'Valor', 'Valor Pago', 'Vencimento', 'Situação']
-    snake_case_headers = headers.map { |el| el.sub(' ', '') }.map(&:underscore)
-    xlsx.sheets.each do |sheet_name|
-      sheet = xlsx.sheet(sheet_name)
-      sheet.each_row_streaming(offset: 2).with_index do |row, index_row|
-        pagamento = { id: index_row + 1 }
-        row.each_with_index do |cell, index_col|
-          pagamento[snake_case_headers[index_col]] = cell.value
-        end
-
-        next unless pagamento['valor_pago'].positive?
-
-        next if pagamento['nome'].include? 'Totais::::>'
-
-        pagamentos << pagamento
-      end
-    end
-
-    planilha = Planilha.create!(tipo: :importacao_caixa, data: Time.zone.now, user_id: 1)
-    planilha.arquivo.attach(io: File.open(tmpfile.path), filename: "Planilha Caixa - #{Time.zone.now}.xlsx")
-
-    render json: {
-      pagamentos_processados: pagamentos,
-      id: planilha.id
-    }
+    importacao = ImportacaoLogic.new(params[:file], current_api_user.id, params[:data_referencia] || Time.zone.now)
+    importacao.importar_dados
+    
+		if importacao.saved? 
+			render json: {id: importacao.planilha_id}, status: :created
+		else
+			render json: {message: "Já existe uma planilha cadastrada com esta data"}, status: :unprocessable_entity
+		end
+	rescue StandardError => e
+		render json: {message: "Erro na importação da planilha - #{e}"}, status: :unprocessable_entity
   end
 
   def show
