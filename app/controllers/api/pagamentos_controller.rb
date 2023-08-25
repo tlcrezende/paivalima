@@ -1,7 +1,7 @@
 class Api::PagamentosController < ApplicationController
   include Paginable
-  
-  before_action :set_pagamento, only: %i[ show update destroy ]
+
+  before_action :set_pagamento, only: %i[show update destroy]
 
   # GET /pagamentos
   def index
@@ -40,14 +40,29 @@ class Api::PagamentosController < ApplicationController
     @pagamento.destroy
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_pagamento
-      @pagamento = Pagamento.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def pagamento_params
-      params.require(:pagamento).permit(:contrato_id, :cliente_id, :lote_id, :data_vencimento, :valor, :status, :identificador, :data_pagamento)
-    end
+  def all_clientes
+    @clients = Cliente.all.order(:nome).pluck(:id, :nome)
+    render json: @clients
+  end
+
+  def all_contratos
+    @cliente = Cliente.find(params[:id])
+    @cliente = @cliente.contratos.joins(:lote).joins(lote: :loteamento)
+                       .order('loteamentos.nome', 'lotes.numero')
+                       .pluck(:id, Arel.sql("concat(loteamentos.nome, ' - Lote ', lotes.numero)"))
+    render json: @cliente
+  end
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_pagamento
+    @pagamento = Pagamento.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def pagamento_params
+    params.require(:pagamento).permit(:contrato_id, :cliente_id, :lote_id, :data_vencimento, :valor, :status, :identificador, :data_pagamento)
+  end
 end
