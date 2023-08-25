@@ -2,31 +2,27 @@ class Api::PagamentosController < ApplicationController
   include Paginable
   
   before_action :set_pagamento, only: %i[ show update destroy ]
+  before_action :authenticate_api_user!
 
-  # GET /pagamentos
   def index
-    @pagamentos = Pagamento.page(current_page).per(per_page)
+    @pagamentos = Pagamento.active.page(current_page).per(per_page)
 
     render json: @pagamentos, meta: meta_attributes(@pagamentos), adapter: :json
   end
 
-  # GET /pagamentos/1
   def show
     render json: @pagamento
   end
 
-  # POST /pagamentos
   def create
-    @pagamento = Pagamento.new(pagamento_params)
+    contrato = Contrato.find(params[:contrato_id])
+    pagamentos = PagamentoLogic.new(contrato.id, params[:valor], params[:qtde_parcelas], params[:data_vencimento])
+    pagamentos.create_carne
 
-    if @pagamento.save
-      render json: @pagamento, status: :created, location: @pagamento
-    else
-      render json: @pagamento.errors, status: :unprocessable_entity
-    end
+    render json: {carne_codigo: pagamentos.codigo}, status: :created
+
   end
 
-  # PATCH/PUT /pagamentos/1
   def update
     if @pagamento.update(pagamento_params)
       render json: @pagamento
@@ -35,19 +31,17 @@ class Api::PagamentosController < ApplicationController
     end
   end
 
-  # DELETE /pagamentos/1
   def destroy
-    @pagamento.destroy
+    #softdelete
+    @pagamento.update(soft_deleted: true)
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_pagamento
       @pagamento = Pagamento.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def pagamento_params
-      params.require(:pagamento).permit(:contrato_id, :cliente_id, :lote_id, :data_vencimento, :valor, :status, :identificador, :data_pagamento)
+      params.require(:pagamento).permit(:contrato_id, :valor, :qtde_parcelas, :data_vencimento)
     end
 end

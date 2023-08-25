@@ -6,4 +6,7 @@ class Planilha < ApplicationRecord
 
   has_one_attached :arquivo
 
+  def arquivo_url 
+    arquivo.blob.url
+  end
 end
