@@ -41,6 +41,20 @@ class Api::ClientesController < ApplicationController
     @cliente.destroy
   end
 
+  def all_clientes
+    @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
+    render json: @clientes
+  end
+
+
+  def all_contratos
+    @cliente = Cliente.find(params[:id])
+    @cliente = @cliente.contratos.joins(:lote).joins(lote: :loteamento)
+                       .order('loteamentos.nome', 'lotes.numero')
+                       .pluck(:id, Arel.sql("concat(loteamentos.nome, ' - Lote ', lotes.numero)"))
+    render json: @cliente
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

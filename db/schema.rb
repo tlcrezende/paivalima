@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_24_042944) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_25_050606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -131,6 +131,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_24_042944) do
     t.integer "ordem"
     t.integer "ordem_carne"
     t.string "carne_codigo"
+    t.boolean "soft_deleted", default: false
     t.index ["cliente_id"], name: "index_pagamentos_on_cliente_id"
     t.index ["contrato_id"], name: "index_pagamentos_on_contrato_id"
     t.index ["lote_id"], name: "index_pagamentos_on_lote_id"

@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
     mount_devise_token_auth_for 'User', at: 'auth'
-    get 'pagamentos/all_clientes', to: 'pagamentos#all_clientes'
-    get 'pagamentos/all_contratos/:id', to: 'pagamentos#all_contratos'
+    get 'clientes/all_clientes', to: 'clientes#all_clientes'
+    get 'clientes/all_contratos/:id', to: 'clientes#all_contratos'
 
     resources :clientes
     resources :loteamentos
