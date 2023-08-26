@@ -20,7 +20,8 @@ class Api::PagamentosController < ApplicationController
     pagamentos.create_carne
 
     render json: {carne_codigo: pagamentos.codigo}, status: :created
-
+  rescue StandardError => e
+    render json: {message: "Erro na criação do carne - #{e}"}, status: :unprocessable_entity
   end
 
   def update
