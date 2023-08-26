@@ -6,6 +6,13 @@ class Api::ClientesController < ApplicationController
 
   # GET /clientes
   def index
+    if params[:simple_index]
+      @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
+      render json: @clientes.map { |cliente| { id: cliente[0], label: cliente[1] } }
+      return
+    end
+
+
     @clientes = Cliente.page(current_page).per(per_page)
 
     render json: @clientes, meta: meta_attributes(@clientes), adapter: :json
@@ -13,6 +20,22 @@ class Api::ClientesController < ApplicationController
 
   # GET /clientes/1
   def show
+    if params[:simple_contratos]
+      @cliente = Cliente.find(params[:id])
+      @contratos = @cliente.contratos.map do |contrato|
+        {
+          id: contrato.id,
+          label: contrato.lote.loteamento.nome + ' - Lote ' + contrato.lote.numero.to_s,
+          valor: contrato.lote.valor,
+          montante: contrato.lote.valor - contrato.pagamentos.filter(&:data_pagamento).sum(&:valor), # TODO: Juros
+          qtde_parcelas: contrato.qnt_parcelas,
+          qtde_parcelas_pagas: contrato.pagamentos.filter(&:data_pagamento).size
+        }
+      end
+      render json: @contratos
+      return
+    end
+
     render json: @cliente
   end
 
@@ -41,19 +64,6 @@ class Api::ClientesController < ApplicationController
     @cliente.destroy
   end
 
-  def all_clientes
-    @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
-    render json: @clientes
-  end
-
-
-  def all_contratos
-    @cliente = Cliente.find(params[:id])
-    @cliente = @cliente.contratos.joins(:lote).joins(lote: :loteamento)
-                       .order('loteamentos.nome', 'lotes.numero')
-                       .pluck(:id, Arel.sql("concat(loteamentos.nome, ' - Lote ', lotes.numero)"))
-    render json: @cliente
-  end
 
   private
 

@@ -8,9 +8,10 @@ class Api::ContratosController < ApplicationController
 
   # GET /contratos
   def index
-    @contratos = Contrato.page(current_page).per(per_page)
+    # @contratos = @contratos.page(current_page).per(per_page)
 
-    render json: @contratos, meta: meta_attributes(@contratos), adapter: :json
+    # render json: @contratos, meta: meta_attributes(@contratos), adapter: :json
+    render json: Queries.contratos_index
   end
 
   # GET /contratos/1
