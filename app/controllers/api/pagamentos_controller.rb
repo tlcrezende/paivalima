@@ -5,9 +5,7 @@ class Api::PagamentosController < ApplicationController
   before_action :authenticate_api_user!
 
   def index
-    @pagamentos = Pagamento.active.page(current_page).per(per_page)
-
-    render json: @pagamentos, meta: meta_attributes(@pagamentos), adapter: :json
+    render json: Queries.pagamentos_index
   end
 
   def show

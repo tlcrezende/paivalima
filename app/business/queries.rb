@@ -18,4 +18,18 @@ class Queries
     "
     run(query)
   end
+
+  def self.pagamentos_index 
+    query = "
+      select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela
+      from pagamentos p
+      inner join contratos c on c.id = p.contrato_id
+      inner join lotes l on l.id = p.lote_id
+      inner join clientes c2 on c2.id = p.cliente_id
+      inner join loteamentos l2 on l2.id = l.loteamento_id
+      WHERE p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '6 months' AND CURRENT_DATE + INTERVAL '6 months';
+    "
+    run(query)
+  end
 end
