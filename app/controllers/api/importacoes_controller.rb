@@ -20,7 +20,7 @@ class Api::ImportacoesController < ApplicationController
 
   def show
 		pagamentos_processados = Importacao.where(planilha_id: params[:id])
-    url = planilha.arquivo_url
+    url = Planilha.find(params[:id]).arquivo_url
 
     render json: { pagamentos_processados: pagamentos_processados, url: url }
   end

@@ -28,7 +28,8 @@ class Queries
       inner join lotes l on l.id = p.lote_id
       inner join clientes c2 on c2.id = p.cliente_id
       inner join loteamentos l2 on l2.id = l.loteamento_id
-      WHERE p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '6 months' AND CURRENT_DATE + INTERVAL '6 months';
+      WHERE p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '6 months' AND CURRENT_DATE + INTERVAL '6 months'
+      and p.soft_deleted = false;
     "
     run(query)
   end
