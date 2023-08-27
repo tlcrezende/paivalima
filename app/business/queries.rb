@@ -9,7 +9,7 @@ class Queries
       count(p.data_pagamento) as qtde_pagamentos_recebidos,
       count(distinct c2.id) as qtde_contratos_vigentes,
       min(c2.data_inicio) as data_inicio_contratos,
-      sum(p.valor) filter(where p.data_pagamento is not null) as valor_recebido,
+      sum(p.valor_pago) as valor_recebido,
       (min(p.data_vencimento) filter(where p.data_pagamento is null)) < now() as atrasado
 
       from clientes c
@@ -41,7 +41,10 @@ class Queries
   def self.pagamentos_index 
     query = "
       select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
-      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne, 
+      (select count(distinct p2.id)  from pagamentos p2
+      where p.carne_codigo = p2.carne_codigo
+      ) as qtde_parcelas_carne
       from pagamentos p
       inner join contratos c on c.id = p.contrato_id
       inner join lotes l on l.id = p.lote_id

@@ -40,13 +40,13 @@ class ImportacaoLogic
   end
 
   def validar_data_referencia
-    raise "Já existe uma planilha cadastrada com esta data" if Planilha.where(data: @data_referencia).any?
+    raise "Já existe uma planilha cadastrada com esta data" if Planilha.where(data_referencia: @data_referencia).any?
   end
 
   def modificar_status_pagamentos
     ActiveRecord::Base.transaction do 
       @pagamentos.each do |pagamento|
-        Pagamento.find_by_identificador(pagamento['seu_número']).update(status: 'Pago', data_pagamento: @data_referencia, planilha: @planilha.id)
+        Pagamento.find_by_identificador(pagamento['seu_número']).update(status: :pago, data_pagamento: @data_referencia, planilha: @planilha.id, valor_pago: pagamento['valor_pago'])
       end
     end
     @pagamentos_modificados = true
@@ -57,7 +57,7 @@ class ImportacaoLogic
   end
 
   def validar_status 
-    pagos = Pagamento.where(identificador: @pagamentos.pluck('seu_número'), status: 'Pago')
+    pagos = Pagamento.where(identificador: @pagamentos.pluck('seu_número'), status: :pago)
     raise "Já existem pagamentos com status pago: #{pagos.map { |p| p.identificador }.join(', ')}" if pagos.any?
   end
 
@@ -77,7 +77,7 @@ class ImportacaoLogic
           raise "#{sheet_name} coluna com célula vazia: #{snake_case_headers[index_col]}" if cell.value.nil? && pagamento[snake_case_headers[0]] != 'Totais::::>'
         end
         
-        next if pagamento['nome'].include? 'Totais::::>'
+        break if pagamento['nome'].include? 'Totais::::>'
 
         next unless pagamento['valor_pago'].positive?
 
