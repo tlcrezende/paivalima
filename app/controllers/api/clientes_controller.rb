@@ -6,16 +6,17 @@ class Api::ClientesController < ApplicationController
 
   # GET /clientes
   def index
-    if params[:simple_index]
-      @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
-      render json: @clientes.map { |cliente| { id: cliente[0], label: cliente[1] } }
-      return
-    end
+    # if params[:simple_index]
+    #   @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
+    #   render json: @clientes.map { |cliente| { id: cliente[0], label: cliente[1] } }
+    #   return
+    # end
 
 
-    @clientes = Cliente.page(current_page).per(per_page)
+    # @clientes = Cliente.page(current_page).per(per_page)
 
-    render json: @clientes, meta: meta_attributes(@clientes), adapter: :json
+    # render json: @clientes, meta: meta_attributes(@clientes), adapter: :json
+    render json: Queries.clientes_index
   end
 
   # GET /clientes/1
@@ -44,7 +45,7 @@ class Api::ClientesController < ApplicationController
     @cliente = Cliente.new(cliente_params)
 
     if @cliente.save
-      render json: @cliente, status: :created, location: @cliente
+      render json: { id: @cliente.id }, status: :created
     else
       render json: @cliente.errors, status: :unprocessable_entity
     end
