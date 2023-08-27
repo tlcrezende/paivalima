@@ -8,13 +8,13 @@ class PagamentoLogic
     @carne_codigo = ""
   end
 
-  def validate_carne 
+  def validate_carne
     pagamentos = Pagamento.where(contrato_id: @contrato_id).pluck(:data_vencimento)
     if pagamentos.any? {|d| d > @data_vencimento.to_datetime}
-      raise "fudeu negada"
+      raise "Pagamento futuro em outro carne já cadastrado"
     end
   end
-  
+
   def create_carne
     validate_carne
     pagamentos = []

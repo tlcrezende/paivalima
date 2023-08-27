@@ -6,7 +6,7 @@ class Pagamento < ApplicationRecord
   validates :identificador, presence: true, uniqueness: true
   validates :valor, :data_vencimento, presence: true
 
-  scope :active , -> { where(soft_deleted: false) }
+  scope :active, -> { where(soft_deleted: false) }
 
   def soft_delete
     update(soft_deleted: true)

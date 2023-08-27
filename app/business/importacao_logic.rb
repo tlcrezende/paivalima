@@ -8,6 +8,7 @@ class ImportacaoLogic
     @data_referencia = data_referencia
     @parsed = false
     @saved = false
+    @pagamentos_existentes_validados = false
     @pagamentos = []
   end
 
@@ -15,9 +16,11 @@ class ImportacaoLogic
     @tmpfile = Tempfile.new.binmode
     @tmpfile << Base64.decode64(@file)
     @tmpfile.rewind
-    parse_file if data_existente?
+    # parse_file if !data_existente?
+    parse_file
     save_planilha if @parsed
     save_data if @saved
+    validar_pagamentos_existente
   end
 
   def saved?
@@ -30,6 +33,16 @@ class ImportacaoLogic
 
   def data_existente?
     Planilha.where(data: @data_referencia).any?
+  end
+
+  def validar_pagamentos_existente 
+    pagamentos_nao_existentes = @pagamentos.pluck('seu_número') - Pagamento.pluck(:identificador)
+    byebug
+    if pagamentos_nao_existentes.empty?
+      @pagamentos_existentes_validados = true
+    else
+      raise "Alguns pagamentos não existem no sistema: #{pagamentos_nao_existentes}"
+    end
   end
 
   def parse_file

@@ -5,9 +5,7 @@ class Api::PagamentosController < ApplicationController
   before_action :authenticate_api_user!
 
   def index
-    @pagamentos = Pagamento.active.page(current_page).per(per_page)
-
-    render json: @pagamentos, meta: meta_attributes(@pagamentos), adapter: :json
+    render json: Queries.pagamentos_index
   end
 
   def show
@@ -20,7 +18,8 @@ class Api::PagamentosController < ApplicationController
     pagamentos.create_carne
 
     render json: {carne_codigo: pagamentos.codigo}, status: :created
-
+  rescue StandardError => e
+    render json: {message: "Erro na criação do carne - #{e}"}, status: :unprocessable_entity
   end
 
   def update
