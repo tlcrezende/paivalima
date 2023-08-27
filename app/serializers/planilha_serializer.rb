@@ -1,5 +1,7 @@
 class PlanilhaSerializer < ActiveModel::Serializer
-  attributes :id, :data
+  attributes :id, :data_referencia, :user_name, :created_at
 
-  has_one :user
+  def user_name 
+    object.user.name
+  end
 end
