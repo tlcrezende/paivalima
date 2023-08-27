@@ -8,6 +8,10 @@ class Pagamento < ApplicationRecord
 
   scope :active, -> { where(soft_deleted: false) }
 
+  enum status: [:pendente, :pago]
+
+  enum tipo_pagamento: [:caixa_boleto, :pix, :dinheiro, :transferencia]
+
   def soft_delete
     update(soft_deleted: true)
   end

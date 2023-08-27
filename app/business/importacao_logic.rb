@@ -8,7 +8,7 @@ class ImportacaoLogic
     @data_referencia = data_referencia
     @parsed = false
     @saved = false
-    @pagamentos_existentes_validados = false
+    @pagamentos_modificados = false
     @pagamentos = []
   end
 
@@ -16,42 +16,53 @@ class ImportacaoLogic
     @tmpfile = Tempfile.new.binmode
     @tmpfile << Base64.decode64(@file)
     @tmpfile.rewind
-    # parse_file if !data_existente?
+    # Verifica se já existe uma planilha com a data de referência
+    validar_data_referencia
+    # Extrai as informações da planilha
     parse_file
-    save_planilha if @parsed
-    save_data if @saved
+    # Verifica se todos os pagamentos existentes na planilha também existem no banco de dados
     validar_pagamentos_existente
+    # Verifica se todos os status são pendentes
+    validar_status
+    # Faz alterações no status dos pagamentos
+    
+    salvar_planilha if @parsed
+    salvar_dados_planilha if @saved
+    modificar_status_pagamentos if @parsed && @saved
   end
 
   def saved?
-    @saved
+    @parsed && @saved && @pagamentos_modificados
   end
   
   def planilha_id 
     @planilha.id
   end
 
-  def data_existente?
-    Planilha.where(data: @data_referencia).any?
+  def validar_data_referencia
+    raise "Já existe uma planilha cadastrada com esta data" if Planilha.where(data_referencia: @data_referencia).any?
   end
 
-  def validar_pagamentos_existente 
-    pagamentos_nao_existentes = @pagamentos.pluck('seu_número') - Pagamento.pluck(:identificador)
-    byebug
-    if pagamentos_nao_existentes.empty?
-      @pagamentos_existentes_validados = true
-    else
-      raise "Alguns pagamentos não existem no sistema: #{pagamentos_nao_existentes}"
+  def modificar_status_pagamentos
+    ActiveRecord::Base.transaction do 
+      @pagamentos.each do |pagamento|
+        Pagamento.find_by_identificador(pagamento['seu_número']).update(status: :pago, data_pagamento: @data_referencia, planilha: @planilha.id, valor_pago: pagamento['valor_pago'])
+      end
     end
+    @pagamentos_modificados = true
+  end
+
+  def validar_pagamentos_existente
+    raise "Alguns pagamentos não existem no sistema: #{pagamentos_nao_existentes}" if (@pagamentos.pluck('seu_número') - Pagamento.pluck(:identificador)).any? 
+  end
+
+  def validar_status 
+    pagos = Pagamento.where(identificador: @pagamentos.pluck('seu_número'), status: :pago)
+    raise "Já existem pagamentos com status pago: #{pagos.map { |p| p.identificador }.join(', ')}" if pagos.any?
   end
 
   def parse_file
     xlsx = Roo::Spreadsheet.open(@tmpfile.path, extension: :xlsx)
-
-    # Definir função de validação da sheet
-    # 1 - Verificar headerRow - Deve ser idêntica
-    # 2 - Filtrar resultados com valor pago
-    # 3 - Parse nas tipagens para garantir consistência no banco
 
     headers = ['Nome', 'Seu Número', 'Nosso Numero', 'Valor', 'Valor Pago', 'Vencimento', 'Situação']
     snake_case_headers = headers.map { |el| el.sub(' ', '') }.map(&:underscore)
@@ -66,10 +77,9 @@ class ImportacaoLogic
           raise "#{sheet_name} coluna com célula vazia: #{snake_case_headers[index_col]}" if cell.value.nil? && pagamento[snake_case_headers[0]] != 'Totais::::>'
         end
         
-        next if pagamento['nome'].include? 'Totais::::>'
+        break if pagamento['nome'].include? 'Totais::::>'
 
         next unless pagamento['valor_pago'].positive?
-
 
         @pagamentos << pagamento
       end
@@ -78,13 +88,13 @@ class ImportacaoLogic
     @parsed = true
   end
 
-  def save_planilha
-    @planilha = Planilha.create!(tipo: :importacao_caixa, data: Time.zone.now, user_id: @user_id)
-    @planilha.arquivo.attach(io: File.open(@tmpfile.path), filename: "Planilha Caixa - #{Time.zone.now}.xlsx")
+  def salvar_planilha
+    @planilha = Planilha.create!(tipo: :importacao_caixa, data_referencia: @data_referencia, user_id: @user_id)
+    @planilha.arquivo.attach(io: File.open(@tmpfile.path), filename: "Planilha Caixa - #{@data_referencia}.xlsx")
     @saved = true
   end
 
-  def save_data 
+  def salvar_dados_planilha 
     importacao = []
     @pagamentos.each do |pagamento|
       importacao << {
