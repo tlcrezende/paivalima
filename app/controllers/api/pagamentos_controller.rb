@@ -44,6 +44,6 @@ class Api::PagamentosController < ApplicationController
     end
 
     def pagamento_params
-      params.require(:pagamento).permit(:contrato_id, :valor, :qtde_parcelas, :data_vencimento)
+      params.require(:pagamento).permit(:data_pagamento, :tipo_pagamento, :valor_pago)
     end
 end
