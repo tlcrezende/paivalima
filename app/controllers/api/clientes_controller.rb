@@ -6,11 +6,11 @@ class Api::ClientesController < ApplicationController
 
   # GET /clientes
   def index
-    # if params[:simple_index]
-    #   @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
-    #   render json: @clientes.map { |cliente| { id: cliente[0], label: cliente[1] } }
-    #   return
-    # end
+    if params[:simple_index]
+      @clientes = Cliente.all.order(:nome).pluck(:id, :nome)
+      render json: @clientes.map { |cliente| { id: cliente[0], label: cliente[1] } }
+      return
+    end
 
 
     # @clientes = Cliente.page(current_page).per(per_page)
