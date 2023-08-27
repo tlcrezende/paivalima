@@ -9,7 +9,9 @@ class Api::PagamentosController < ApplicationController
   end
 
   def show
-    render json: @pagamento
+    pagamento = Queries.pagamentos_show(params[:id])
+    
+    render json: pagamento[0]
   end
 
   def create

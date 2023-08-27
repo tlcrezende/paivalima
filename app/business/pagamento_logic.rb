@@ -9,10 +9,11 @@ class PagamentoLogic
   end
 
   def validacao_carne
-    # pagamentos = Pagamento.where(contrato_id: @contrato_id).pluck(:data_vencimento)
-    # if pagamentos.any? {|d| d > @data_vencimento.to_datetime}
-    #   raise "Pagamento futuro em outro carne já cadastrado"
-    # end
+    pagamentos = Pagamento.active.where(contrato_id: @contrato_id)
+    datas = pagamentos.pluck(:data_vencimento)
+    qtde_parcelas_atuais = pagamentos.count
+    raise "Pagamento futuro em outro carne já cadastrado" if datas.any? {|d| d > @data_vencimento.to_datetime}
+    raise "Quantidade de parcelas maior que o contrato" if Contrato.find(@contrato_id).qnt_parcelas - qtde_parcelas_atuais < @qtde_parcelas
   end
 
   def create_carne
