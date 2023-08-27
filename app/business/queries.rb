@@ -6,16 +6,16 @@ class Queries
   def self.clientes_index
     query = "
       select c.id, c.id cliente_id, c.nome cliente_nome,
-      count(p.data_pagamento) as qtde_pagamentos_recebidos,
-      count(distinct c2.id) as qtde_contratos_vigentes,
+      coalesce(count(p.data_pagamento), 0) as qtde_pagamentos_recebidos,
+      coalesce(count(distinct c2.id), 0) as qtde_contratos_vigentes,
       min(c2.data_inicio) as data_inicio_contratos,
-      sum(p.valor_pago) as valor_recebido,
-      (min(p.data_vencimento) filter(where p.data_pagamento is null)) < now() as atrasado
+      coalesce(sum(p.valor_pago), 0) as valor_recebido,
+      coalesce((min(p.data_vencimento) filter(where p.data_pagamento is null)) < now(), false) as atrasado
 
       from clientes c
-      inner join contratos c2 on c2.cliente_id = c.id
-      inner join pagamentos p on p.contrato_id = c2.id
-      inner join lotes l on l.id = c2.lote_id
+      left join contratos c2 on c2.cliente_id = c.id
+      left join pagamentos p on p.contrato_id = c2.id
+      left join lotes l on l.id = c2.lote_id
 
       group by c.id
     "
