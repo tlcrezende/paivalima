@@ -69,7 +69,7 @@ class Queries
   def self.pagamentos_index
     query = "
       select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
-      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne, 
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne,
       (select count(distinct p2.id)  from pagamentos p2
       where p.carne_codigo = p2.carne_codigo
       ) as qtde_parcelas_carne
