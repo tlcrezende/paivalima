@@ -3,9 +3,10 @@ class Api::LoteamentosController < ApplicationController
 
   # GET /loteamentos
   def index
-    @loteamentos = Loteamento.all
+    # @loteamentos = Loteamento.all
 
-    render json: @loteamentos
+    # render json: @loteamentos
+    render json: Queries.loteamentos_index
   end
 
   # GET /loteamentos/1

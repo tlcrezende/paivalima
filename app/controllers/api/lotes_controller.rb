@@ -5,9 +5,10 @@ class Api::LotesController < ApplicationController
 
   # GET /lotes
   def index
-    @lotes = Lote.page(current_page).per(per_page)
+    # @lotes = Lote.page(current_page).per(per_page)
 
-    render json: @lotes, meta: meta_attributes(@lotes), adapter: :json
+    # render json: @lotes, meta: meta_attributes(@lotes), adapter: :json
+    render json: Queries.lotes_index
   end
 
   # GET /lotes/1
