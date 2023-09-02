@@ -19,7 +19,6 @@ class Api::ClientesController < ApplicationController
     render json: Queries.clientes_index
   end
 
-  # GET /clientes/1
   def show
     if params[:simple_contratos]
       @cliente = Cliente.find(params[:id])
@@ -27,10 +26,10 @@ class Api::ClientesController < ApplicationController
         {
           id: contrato.id,
           label: contrato.lote.loteamento.nome + ' - Lote ' + contrato.lote.numero.to_s,
-          valor: contrato.lote.valor,
-          montante: contrato.lote.valor - contrato.pagamentos.filter(&:data_pagamento).sum(&:valor), # TODO: Juros
+          valor: contrato.valor,
+          montante: contrato.valor - contrato.pagamentos.filter(&:data_pagamento).sum(&:valor), # TODO: Juros
           qtde_parcelas: contrato.qnt_parcelas,
-          qtde_parcelas_pagas: contrato.pagamentos.filter(&:data_pagamento).size
+          qtde_parcelas_pagas: contrato.pagamentos.filter{|p| p.status == 'pago'}.size
         }
       end
       render json: @contratos
@@ -40,7 +39,6 @@ class Api::ClientesController < ApplicationController
     render json: @cliente
   end
 
-  # POST /clientes
   def create
     @cliente = Cliente.new(cliente_params)
 

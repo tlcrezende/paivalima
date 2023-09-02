@@ -1,5 +1,5 @@
 class ClienteSerializer < ActiveModel::Serializer
-  attributes :id, :nome, :cpf_cnpj, :data_nascimento, :celular, :contratos, :pagamentos
+  attributes :id, :nome, :cpf_cnpj, :rg, :data_nascimento, :logradouro, :cep, :cidade, :uf, :celular, :contratos, :pagamentos
 
   def contratos
     object.contratos.map do |contrato|
@@ -21,6 +21,7 @@ class ClienteSerializer < ActiveModel::Serializer
         id: pagamento.id,
         data_vencimento: pagamento.data_vencimento,
         valor: pagamento.valor,
+        valor_pago: pagamento.valor_pago,
         loteamento_lote: "#{pagamento.contrato.lote.loteamento.nome} / Lote #{pagamento.contrato.lote.numero}",
         ordem: pagamento.ordem,
         qtde_parcelas: pagamento.contrato.qnt_parcelas,

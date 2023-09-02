@@ -24,8 +24,9 @@ class Queries
 
   def self.loteamentos_index
     query = "
-      select l.id, l.nome, l.registro, l.tamanho, l.valor,
+      select l.id, l.nome, l.registro,
       count(distinct l2.id) as qtde_lotes,
+      sum(c.valor) as valor,
       coalesce(sum(p.valor) filter(where p.data_pagamento is not null), 0) as valor_arrecadado,
       count(distinct l2.id) filter(where c.id is not null) as qtde_lotes_com_contrato
 
@@ -41,10 +42,13 @@ class Queries
 
   def self.lotes_index
     query = "
-      select l.id, l2.nome loteamento_nome, l.numero, l.tamanho
+      select l.id, l2.nome loteamento_nome, l.numero, l.tamanho, c.valor, sum(p.valor_pago) as valor_arrecadado
 
       from lotes l
       inner join loteamentos l2 on l2.id = l.loteamento_id
+      inner join contratos c on c.lote_id = l.id
+      left join pagamentos p on p.contrato_id = c.id
+      group by l.id, l2.nome, l.numero, l.tamanho, c.valor
     "
     run(query)
   end

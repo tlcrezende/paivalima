@@ -1,5 +1,5 @@
 class LoteamentoSerializer < ActiveModel::Serializer
-  attributes :id, :nome, :registro, :tamanho, :lotes, :qtde_lotes, :qtde_lotes_com_contrato, :valor, :valor_arrecadado
+  attributes :id, :nome, :registro, :lotes, :qtde_lotes, :qtde_lotes_com_contrato, :valor_arrecadado
   def lotes
     return nil unless instance_options[:show_lotes]
 
@@ -12,7 +12,8 @@ class LoteamentoSerializer < ActiveModel::Serializer
         **lote.attributes.symbolize_keys,
         qtde_pagamentos_recebidos: pagamentos_recebidos[index],
         qtde_pagamentos: pagamentos[index],
-        valor_recebido: valores[index]
+        valor_recebido: valores[index],
+        valor_de_contrato: lote.contratos.sum(:valor)
       }
     end
     arr
@@ -33,7 +34,7 @@ class LoteamentoSerializer < ActiveModel::Serializer
 
   def valor_arrecadado
     object.lotes.includes(contratos: :pagamentos).map(&:contratos).flatten
-          .map(&:pagamentos).flatten.filter(&:data_pagamento).sum(&:valor)
+          .map(&:pagamentos).flatten.filter(&:data_pagamento).sum(&:valor_pago)
   end
 
   def qtde_pagamentos_recebidos
@@ -45,6 +46,6 @@ class LoteamentoSerializer < ActiveModel::Serializer
   end
 
   def valor_recebido
-    object.lotes.includes(:pagamentos).map(&:pagamentos).map { |p| p.filter(&:data_pagamento).sum(&:valor) }
+    object.lotes.includes(:pagamentos).map(&:pagamentos).map { |p| p.filter(&:data_pagamento).sum(&:valor_pago) }
   end
 end

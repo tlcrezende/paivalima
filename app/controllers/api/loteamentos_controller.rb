@@ -47,6 +47,6 @@ class Api::LoteamentosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def loteamento_params
-      params.require(:loteamento).permit(:nome, :registro, :tamanho)
+      params.require(:loteamento).permit(:nome, :registro)
     end
 end
