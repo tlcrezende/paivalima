@@ -1,5 +1,5 @@
 class ContratoSerializer < ActiveModel::Serializer
-  attributes :id, :data_inicio, :qnt_parcelas, :qtde_parcelas_pagas, :pagamentos
+  attributes :id, :data_inicio, :qnt_parcelas, :qtde_parcelas_pagas, :pagamentos, :valor
   has_one :lote
   has_one :cliente
 

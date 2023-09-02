@@ -4,7 +4,7 @@ class Pagamento < ApplicationRecord
   belongs_to :lote
 
   validates :identificador, presence: true, uniqueness: true
-  validates :valor, :data_vencimento, presence: true
+  # validates :valor, :data_vencimento, presence: true
 
   scope :active, -> { where(soft_deleted: false) }
 

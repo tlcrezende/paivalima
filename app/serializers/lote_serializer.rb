@@ -1,5 +1,5 @@
 class LoteSerializer < ActiveModel::Serializer
-  attributes :id, :numero, :valor, :tamanho, :loteamento_nome, :qtde_pagamentos_recebidos, :qtde_pagamentos, :valor_recebido, :contratos, :loteamento_id
+  attributes :id, :numero, :tamanho, :loteamento_nome, :qtde_pagamentos_recebidos, :qtde_pagamentos, :valor_recebido, :contratos, :loteamento_id
 
   def loteamento_nome
     object.loteamento.nome

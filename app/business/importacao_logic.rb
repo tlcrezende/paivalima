@@ -21,14 +21,14 @@ class ImportacaoLogic
     # Extrai as informações da planilha
     parse_file
     # Verifica se todos os pagamentos existentes na planilha também existem no banco de dados
-    validar_pagamentos_existente
-    # Verifica se todos os status são pendentes
+    # validar_pagamentos_existente
+    # # Verifica se todos os status são pendentes
     validar_status
     # Faz alterações no status dos pagamentos
     
     salvar_planilha if @parsed
-    salvar_dados_planilha if @saved
     modificar_status_pagamentos if @parsed && @saved
+    salvar_dados_planilha if @saved
   end
 
   def saved?
@@ -46,17 +46,22 @@ class ImportacaoLogic
   def modificar_status_pagamentos
     ActiveRecord::Base.transaction do 
       @pagamentos.each do |pagamento|
-        Pagamento.find_by_identificador(pagamento['seu_número']).update(status: :pago, data_pagamento: @data_referencia, planilha: @planilha.id, valor_pago: pagamento['valor_pago'])
+        if Pagamento.where(identificador: pagamento['seu_número']).empty?
+          pagamento['pagamento_alterado'] = false
+        else
+          Pagamento.find_by_identificador(pagamento['seu_número']).update(status: :pago, data_pagamento: @data_referencia, planilha: @planilha.id, valor_pago: pagamento['valor_pago'])
+          pagamento['pagamento_alterado'] = true
+        end
       end
     end
     @pagamentos_modificados = true
   end
 
-  def validar_pagamentos_existente
-    raise "Alguns pagamentos não existem no sistema: #{pagamentos_nao_existentes}" if (@pagamentos.pluck('seu_número') - Pagamento.pluck(:identificador)).any? 
-  end
+  # def validar_pagamentos_existente
+  #   raise "Alguns pagamentos não existem no sistema: #{pagamentos_nao_existentes}" if (@pagamentos.pluck('seu_número') - Pagamento.pluck(:identificador)).any? 
+  # end
 
-  def validar_status 
+  def validar_status
     pagos = Pagamento.where(identificador: @pagamentos.pluck('seu_número'), status: :pago)
     raise "Já existem pagamentos com status pago: #{pagos.map { |p| p.identificador }.join(', ')}" if pagos.any?
   end
@@ -107,7 +112,8 @@ class ImportacaoLogic
         valor_pago: pagamento['valor_pago'], 
         data_vencimento: pagamento['vencimento'], 
         situacao: pagamento['situação'], 
-        data_referencia: @data_referencia
+        data_referencia: @data_referencia,
+        pagamento_alterado: pagamento['pagamento_alterado']
       }
     end
     ActiveRecord::Base.transaction { Importacao.insert_all!(importacao) }

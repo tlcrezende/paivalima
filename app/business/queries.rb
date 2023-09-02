@@ -27,7 +27,6 @@ class Queries
       select l.id, l.nome, l.registro, l.tamanho, l.valor,
       count(distinct l2.id) as qtde_lotes,
       coalesce(sum(p.valor) filter(where p.data_pagamento is not null), 0) as valor_arrecadado,
-      coalesce(sum(l2.valor), 0) as valor_total,
       count(distinct l2.id) filter(where c.id is not null) as qtde_lotes_com_contrato
 
       from loteamentos l
@@ -42,7 +41,7 @@ class Queries
 
   def self.lotes_index
     query = "
-      select l.id, l2.nome loteamento_nome, l.numero, l.tamanho, l.valor
+      select l.id, l2.nome loteamento_nome, l.numero, l.tamanho
 
       from lotes l
       inner join loteamentos l2 on l2.id = l.loteamento_id
@@ -53,8 +52,7 @@ class Queries
   def self.contratos_index
     query = "
       select c.id, c.id contrato_id, c2.nome cliente, concat(l2.nome, ' / ', l.numero) as loteamento_lote, c.data_inicio,
-      count(p.data_pagamento) as qtde_parcelas_pagas, count(*) as qtde_parcelas, l.valor
-
+      count(p.data_pagamento) as qtde_parcelas_pagas, count(*) as qtde_parcelas, c.valor
       from contratos c
       inner join lotes l on l.id = c.lote_id
       inner join clientes c2 on c2.id = c.cliente_id

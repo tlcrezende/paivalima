@@ -75,6 +75,6 @@ class Api::ClientesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def cliente_params
-    params.require(:cliente).permit(:nome, :cpf_cnpj, :data_nascimento, :celular, :endereco)
+    params.require(:cliente).permit(:nome, :cpf_cnpj, :data_nascimento, :celular)
   end
 end

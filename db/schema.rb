@@ -10,25 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_27_023109) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_01_220300) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_graphql"
-  enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
-  enable_extension "pgjwt"
-  enable_extension "pgsodium"
   enable_extension "plpgsql"
-  enable_extension "supabase_vault"
-  enable_extension "uuid-ossp"
-
-  # Custom types defined in this database.
-  # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "aal_level", ["aal1", "aal2", "aal3"]
-  create_enum "code_challenge_method", ["s256", "plain"]
-  create_enum "factor_status", ["unverified", "verified"]
-  create_enum "factor_type", ["totp", "webauthn"]
-  create_enum "key_status", ["default", "valid", "invalid", "expired"]
-  create_enum "key_type", ["aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf", "secretbox", "secretstream", "stream_xchacha20"]
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -63,11 +47,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_27_023109) do
     t.string "cpf_cnpj"
     t.string "data_nascimento"
     t.string "celular"
-    t.string "endereco"
+    t.string "logradouro"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "cep"
-    t.string "complemento_endereco"
+    t.string "rg"
+    t.string "cidade"
+    t.string "uf"
   end
 
   create_table "contratos", force: :cascade do |t|
@@ -77,6 +63,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_27_023109) do
     t.integer "qnt_parcelas"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "valor"
+    t.string "hennering_code"
     t.index ["cliente_id"], name: "index_contratos_on_cliente_id"
     t.index ["lote_id"], name: "index_contratos_on_lote_id"
   end
@@ -94,6 +82,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_27_023109) do
     t.bigint "planilha_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "pagamento_alterado"
     t.index ["planilha_id"], name: "index_importacoes_on_planilha_id"
     t.index ["user_id"], name: "index_importacoes_on_user_id"
   end
@@ -110,7 +99,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_27_023109) do
   create_table "lotes", force: :cascade do |t|
     t.bigint "loteamento_id", null: false
     t.integer "numero"
-    t.float "valor"
     t.float "tamanho"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

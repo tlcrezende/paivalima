@@ -1,5 +1,5 @@
 class ClienteSerializer < ActiveModel::Serializer
-  attributes :id, :nome, :cpf_cnpj, :data_nascimento, :celular, :endereco, :contratos, :pagamentos
+  attributes :id, :nome, :cpf_cnpj, :data_nascimento, :celular, :contratos, :pagamentos
 
   def contratos
     object.contratos.map do |contrato|
@@ -9,7 +9,7 @@ class ClienteSerializer < ActiveModel::Serializer
         data_inicio: contrato.data_inicio,
         qtde_parcelas_pagas: contrato.pagamentos.where.not(data_pagamento: nil).size,
         qtde_parcelas: contrato.qnt_parcelas,
-        valor: contrato.lote.valor,
+        valor: contrato.valor,
         valor_recebido: contrato.pagamentos.where.not(data_pagamento: nil).sum(:valor)
       }
     end
