@@ -16,7 +16,9 @@ class ClienteSerializer < ActiveModel::Serializer
   end
 
   def pagamentos
-    object.pagamentos.map do |pagamento|
+    sorted_pagamentos = object.pagamentos.sort_by { |pagamento| pagamento.data_vencimento }.reverse
+
+    sorted_pagamentos.map do |pagamento|
       {
         id: pagamento.id,
         data_vencimento: pagamento.data_vencimento,

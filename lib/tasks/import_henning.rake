@@ -44,6 +44,7 @@ namespace :import do
         pagamento.data_vencimento = d[:data_vencimento]
         pagamento.data_pagamento = d[:data_pagamento] == '/' ? nil : d[:data_pagamento]
         pagamento.valor_pago = d[:valor_recebido]
+        pagamento.valor = d[:valor_a_receber]
         pagamento.contrato_id = contrato.id
         pagamento.cliente_id = contrato.cliente_id
         pagamento.lote_id = contrato.lote_id

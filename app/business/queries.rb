@@ -9,6 +9,7 @@ class Queries
       coalesce(count(p.data_pagamento), 0) as qtde_pagamentos_recebidos,
       coalesce(count(distinct c2.id), 0) as qtde_contratos_vigentes,
       min(c2.data_inicio) as data_inicio_contratos,
+      sum(distinct c2.valor) as valor_contratos,
       coalesce(sum(p.valor_pago), 0) as valor_recebido,
       coalesce((min(p.data_vencimento) filter(where p.data_pagamento is null)) < now(), false) as atrasado
 
@@ -26,8 +27,8 @@ class Queries
     query = "
       select l.id, l.nome, l.registro,
       count(distinct l2.id) as qtde_lotes,
-      sum(c.valor) as valor,
-      coalesce(sum(p.valor) filter(where p.data_pagamento is not null), 0) as valor_arrecadado,
+      sum(distinct c.valor) as valor,
+      coalesce(sum(p.valor) filter(where p.status = 1), 0) as valor_arrecadado,
       count(distinct l2.id) filter(where c.id is not null) as qtde_lotes_com_contrato
 
       from loteamentos l
@@ -36,6 +37,23 @@ class Queries
       left join pagamentos p on p.contrato_id = c.id
 
       group by l.id
+    "
+    run(query)
+  end
+
+  def self.loteamentos_show(loteamento_id)
+    query = "
+      select l.numero , l.tamanho, count(p.status) filter(where p.status = 1) as qtde_parcelas_recebidas,
+      count(p.id) as qtde_parcelas,
+      sum(p.valor_pago) filter(where p.status = 1) as valor_recebido,
+      c.valor as valor_contrato
+      from loteamentos l2 
+      left join lotes l on l.loteamento_id = l2.id 
+      left join contratos c on c.lote_id = l.id
+      left join pagamentos p on p.lote_id = l.id
+      where l2.id = #{loteamento_id}
+      group by l.id, c.valor
+      order by l.numero 
     "
     run(query)
   end
@@ -80,7 +98,7 @@ class Queries
       inner join lotes l on l.id = p.lote_id
       inner join clientes c2 on c2.id = p.cliente_id
       inner join loteamentos l2 on l2.id = l.loteamento_id
-      WHERE p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '6 months' AND CURRENT_DATE + INTERVAL '6 months'
+      WHERE p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '2 months' AND CURRENT_DATE + INTERVAL '3 months'
       and p.soft_deleted = false;
     "
     run(query)
