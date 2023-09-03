@@ -1858,7 +1858,7 @@ namespace :import do
         loteamento = Loteamento.find_by(nome: d[:nome_terreno])
         if loteamento.nil?
           p "Criando loteamento #{d[:nome_terreno]}"
-          loteamento = Loteamento.create(nome: d[:nome_terreno], valor: d[:montante])
+          loteamento = Loteamento.create(nome: d[:nome_terreno])
         end
         lote = Lote.find_by(numero: d[:numero_lote])
         if lote.nil?
@@ -1866,7 +1866,7 @@ namespace :import do
           lote = Lote.create(numero: d[:numero_lote], tamanho: d[:tamanho_lote], loteamento_id: loteamento.id)
         else
           p "Lote #{d[:numero_lote]} já existe, algo errado...."
-          byebug
+          # byebug
         end
         contrato = Contrato.find_by(hennering_code: d[:codigo])
         if contrato.nil?
@@ -1874,7 +1874,7 @@ namespace :import do
           Contrato.create(data_inicio: d[:data_inicio_contrato], qnt_parcelas: d[:qtde_parcelas], valor: d[:montante], hennering_code: d[:codigo], lote_id: lote.id, cliente_id: cliente.id)
         else 
           p "Contrato #{d[:codigo]} já existe, algo errado...."
-          byebug
+          # byebug
         end
       # end
     end

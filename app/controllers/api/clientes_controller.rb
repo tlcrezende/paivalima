@@ -12,7 +12,6 @@ class Api::ClientesController < ApplicationController
       return
     end
 
-
     # @clientes = Cliente.page(current_page).per(per_page)
 
     # render json: @clientes, meta: meta_attributes(@clientes), adapter: :json

@@ -28,35 +28,36 @@ namespace :import do
       break if dados.count == 100
     end
 
-    # id_pagamento = Pagamento.last?.id
-    id_pagamento = 1
+    if Pagamento.all.empty?
+      id_pagamento = 1 
+    else
+      id_pagamento = Pagamento.last.id + 1
+    end
     dados.each do |d| 
       if Contrato.find_by(hennering_code: d[:hennering_code]).nil? 
         p "Contrato #{d[:hennering_code]} não encontrado"
         contratos_nao_encontrados << d[:hennering_code] unless contratos_nao_encontrados.include?(d[:hennering_code])
-      # else
-      #   p "Contrato #{d[:hennering_code]} encontrado"
-      #   contrato = Contrato.find_by(hennering_code: d[:hennering_code])
-      #   pagamento = Pagamento.new
-      #   pagamento.data_vencimento = d[:data_vencimento]
-      #   pagamento.data_pagamento = d[:data_pagamento]
-      #   pagamento.valor_pago = d[:valor_recebido]
-      #   pagamento.contrato_id = contrato.id
-      #   pagamento.cliente_id = contrato.cliente_id
-      #   pagamento.lote_id = contrato.lote_id
-      #   pagamento.status = d[:data_pagamento] == '/' ? 0 : 1
-      #   pagamento.identificador = id_pagamento
-      #   pagamento.tipo_pagamento = 0
-      #   if pagamento.save 
-      #     p "Pagamento #{pagamento.id} criado"
-      #   else
-      #     p "Pagamento não criado, algum erro..."
-      #     byebug
-      #   end
+      else
+        p "Contrato #{d[:hennering_code]} encontrado"
+        contrato = Contrato.find_by(hennering_code: d[:hennering_code])
+        pagamento = Pagamento.new
+        pagamento.data_vencimento = d[:data_vencimento]
+        pagamento.data_pagamento = d[:data_pagamento] == '/' ? nil : d[:data_pagamento]
+        pagamento.valor_pago = d[:valor_recebido]
+        pagamento.contrato_id = contrato.id
+        pagamento.cliente_id = contrato.cliente_id
+        pagamento.lote_id = contrato.lote_id
+        pagamento.status = d[:data_pagamento] == '/' ? 0 : 1
+        pagamento.identificador = id_pagamento
+        pagamento.tipo_pagamento = 0
+        if pagamento.save 
+          p "Pagamento #{pagamento.id} criado"
+        else
+          p "Pagamento não criado, algum erro..."
+        end
         id_pagamento += 1
       end
     end
-    byebug
-    
+    p contratos_nao_encontrados
   end
 end
