@@ -93,13 +93,22 @@
 # Pagamento.insert_all(pagamentos)
 # p 'fim'
 
-Pagamento.all.each do |pagamento|
-  p 'Atualizando pagamentos...'
-  aleatorio = [1, 2, 3].sample
-  status = 'Pago' if aleatorio == 1
-  status = "Pendente" if aleatorio == 2
-  status = "Atrasado" if aleatorio == 3
-  pagamento.update(status: status)
+# Pagamento.all.each do |pagamento|
+#   p 'Atualizando pagamentos...'
+#   aleatorio = [1, 2, 3].sample
+#   status = 'Pago' if aleatorio == 1
+#   status = "Pendente" if aleatorio == 2
+#   status = "Atrasado" if aleatorio == 3
+#   pagamento.update(status: status)
+# end
+
+p 'Atualizando contratos...'
+pagamento_upsert = []
+Contrato.all.each do |contrato|
+  # Update na ordem de cada pagamento em ordem de data de vencimento
+  contrato.pagamentos.order(:data_vencimento).each_with_index do |pagamento, index|
+    pagamento_upsert << pagamento.attributes
+    pagamento_upsert.last['ordem'] = index + 1
+  end
 end
-
-
+Pagamento.upsert_all(pagamento_upsert)
