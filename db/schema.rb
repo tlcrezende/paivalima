@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_02_175023) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_10_173620) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -70,6 +70,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_175023) do
     t.string "rg"
     t.string "cidade"
     t.string "uf"
+    t.string "apelido"
   end
 
   create_table "contratos", force: :cascade do |t|
@@ -81,6 +82,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_175023) do
     t.datetime "updated_at", null: false
     t.float "valor"
     t.string "hennering_code"
+    t.string "descricao"
+    t.string "observacao"
     t.index ["cliente_id"], name: "index_contratos_on_cliente_id"
     t.index ["lote_id"], name: "index_contratos_on_lote_id"
   end
@@ -137,6 +140,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_175023) do
     t.integer "status", default: 0
     t.integer "tipo_pagamento"
     t.float "valor_pago"
+    t.string "observacao"
     t.index ["cliente_id"], name: "index_pagamentos_on_cliente_id"
     t.index ["contrato_id"], name: "index_pagamentos_on_contrato_id"
     t.index ["lote_id"], name: "index_pagamentos_on_lote_id"
@@ -169,6 +173,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_175023) do
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "apelido"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
