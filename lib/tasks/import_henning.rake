@@ -46,8 +46,8 @@ namespace :import do
         p "Contrato #{d[:cliente_codigo_henning].to_s} encontrado..."
         contrato = Contrato.find_by(hennering_code: d[:cliente_codigo_henning].to_s)
         pagamento = Pagamento.new
-        pagamento.data_vencimento = DateTime.strptime((d[:data_vencimento]/1000).to_s, '%s')
-        pagamento.data_pagamento = DateTime.strptime((d[:data_pagamento]/1000).to_s, '%s') if d[:data_pagamento].present?
+        pagamento.data_vencimento = DateTime.parse(d[:data_vencimento])
+        pagamento.data_pagamento = DateTime.parse(d[:data_pagamento]) if d[:data_pagamento].present?
         pagamento.valor_pago = d[:valor_pago]
         pagamento.valor = d[:valor_nominal]
         pagamento.contrato_id = contrato.id
@@ -61,7 +61,7 @@ namespace :import do
         pagamento.carne_codigo = d[:ordem_carne]
         pagamento.observacao = d[:observacao]
         pagamento.planilha = 0
-        pagamento.created_at = DateTime.strptime((d[:data_emissao]/1000).to_s, '%s')
+        pagamento.created_at = DateTime.parse(d[:data_emissao])
         if pagamento.save
           p "Pagamento #{pagamento.id} criado"
         end
