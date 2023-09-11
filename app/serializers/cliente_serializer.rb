@@ -1,5 +1,5 @@
 class ClienteSerializer < ActiveModel::Serializer
-  attributes :id, :nome, :cpf_cnpj, :rg, :data_nascimento, :logradouro, :cep, :cidade, :uf, :celular, :contratos, :pagamentos
+  attributes :id, :nome, :apelido, :cpf_cnpj, :rg, :data_nascimento, :logradouro, :cep, :cidade, :uf, :celular, :contratos, :pagamentos
 
   def contratos
     object.contratos.map do |contrato|
@@ -16,7 +16,7 @@ class ClienteSerializer < ActiveModel::Serializer
   end
 
   def pagamentos
-    sorted_pagamentos = object.pagamentos.sort_by { |pagamento| pagamento.data_vencimento }.reverse
+    sorted_pagamentos = object.pagamentos.sort_by(&:data_vencimento).reverse
 
     sorted_pagamentos.map do |pagamento|
       {
