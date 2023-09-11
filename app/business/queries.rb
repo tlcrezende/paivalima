@@ -74,7 +74,7 @@ class Queries
   def self.contratos_index
     query = "
       select c.id, c.id contrato_id, c2.nome cliente, concat(l2.nome, ' / ', l.numero) as loteamento_lote, c.data_inicio,
-      count(p.data_pagamento) as qtde_parcelas_pagas, count(*) as qtde_parcelas, c.valor
+      count(p.data_pagamento) as qtde_parcelas_pagas, count(*) as qtde_parcelas, c.valor, c.observacao, c.descricao
       from contratos c
       inner join lotes l on l.id = c.lote_id
       inner join clientes c2 on c2.id = c.cliente_id
