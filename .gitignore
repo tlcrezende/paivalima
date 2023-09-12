@@ -30,4 +30,5 @@
 
 .env
 Gemfile.lock
+.byebug_history
 ```
