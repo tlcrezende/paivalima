@@ -24,7 +24,7 @@ class Api::ContratosController < ApplicationController
     @contrato = Contrato.new(contrato_params)
 
     if @contrato.save
-      render json: @contrato, status: :created, location: @contrato
+      render json: @contrato, status: :created
     else
       render json: @contrato.errors, status: :unprocessable_entity
     end
@@ -44,6 +44,20 @@ class Api::ContratosController < ApplicationController
     @contrato.destroy
   end
 
+  def upload_arquivo
+    @contrato = Contrato.find(params[:id])
+    @contrato.arquivos.attach(params[:file])
+
+    render json: { message: 'Arquivo salvo com sucesso' }, status: :created
+  end
+
+  def destroy_arquivo
+    @contrato = Contrato.find(params[:id])
+    @contrato.arquivos.find(params[:active_storage_attachments_id]).purge
+
+    render json: { message: 'Arquivo removido com sucesso' }, status: :ok
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -53,6 +67,6 @@ class Api::ContratosController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def contrato_params
-    params.require(:contrato).permit(:lote_id, :cliente_id, :data_inicio, :datetime, :qnt_parcelas, :integer, :observacao, :descricao)
+    params.require(:contrato).permit(:lote_id, :cliente_id, :data_inicio, :qnt_parcelas, :valor, :observacao, :descricao)
   end
 end

@@ -1,5 +1,10 @@
 require "active_support/core_ext/integer/time"
 
+# Corrige erro ActiveStorage::Blob:Analyzable not found no attachement da importação de XML
+Rails.application.reloader.to_prepare do
+  ActiveStorage::Blob
+end
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 

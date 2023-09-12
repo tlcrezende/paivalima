@@ -4,5 +4,5 @@ class Contrato < ApplicationRecord
 
   has_many :pagamentos
 
-  has_many_attached :images
+  has_many_attached :arquivos
 end
