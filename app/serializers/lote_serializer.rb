@@ -6,7 +6,7 @@ class LoteSerializer < ActiveModel::Serializer
   end
 
   def valor
-    object.contratos.sum(:valor)
+    object.contratos.sum(:valor) || 0
   end
 
   def contratos
