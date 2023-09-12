@@ -10,7 +10,7 @@ class Pagamento < ApplicationRecord
 
   enum status: [:pendente, :pago]
 
-  enum tipo_pagamento: [:caixa_boleto, :pix, :dinheiro, :transferencia]
+  enum tipo_pagamento: [:caixa_boleto, :pix, :dinheiro, :transferencia, :cartao]
 
   def soft_delete
     update(soft_deleted: true)

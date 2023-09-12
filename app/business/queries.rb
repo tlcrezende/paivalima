@@ -47,13 +47,13 @@ class Queries
       count(p.id) as qtde_parcelas,
       sum(p.valor_pago) filter(where p.status = 1) as valor_recebido,
       c.valor as valor_contrato
-      from loteamentos l2 
-      left join lotes l on l.loteamento_id = l2.id 
+      from loteamentos l2
+      left join lotes l on l.loteamento_id = l2.id
       left join contratos c on c.lote_id = l.id
       left join pagamentos p on p.lote_id = l.id
       where l2.id = #{loteamento_id}
       group by l.id, c.valor
-      order by l.numero 
+      order by l.numero
     "
     run(query)
   end
@@ -89,7 +89,7 @@ class Queries
   def self.pagamentos_index
     query = "
       select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
-      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne,
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne,  p.tipo_pagamento,
       (select count(distinct p2.id)  from pagamentos p2
       where p.carne_codigo = p2.carne_codigo
       ) as qtde_parcelas_carne
@@ -107,7 +107,7 @@ class Queries
   def self.pagamentos_show(pagamento_id)
     query = "
       select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
-      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne,
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne, p.tipo_pagamento,
       (select count(distinct p2.id)  from pagamentos p2
       where p.carne_codigo = p2.carne_codigo
       ) as qtde_parcelas_carne
