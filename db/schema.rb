@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_10_173620) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_17_222143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_graphql"
   enable_extension "pg_stat_statements"
@@ -71,6 +71,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_10_173620) do
     t.string "cidade"
     t.string "uf"
     t.string "apelido"
+    t.string "email"
   end
 
   create_table "contratos", force: :cascade do |t|

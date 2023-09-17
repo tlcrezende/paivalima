@@ -50,6 +50,7 @@ class Api::ClientesController < ApplicationController
 
   # PATCH/PUT /clientes/1
   def update
+    byebug
     if @cliente.update(cliente_params)
       render json: @cliente
     else
@@ -74,7 +75,7 @@ class Api::ClientesController < ApplicationController
   def cliente_params
     params.require(:cliente).permit(
       :nome, :apelido, :cpf_cnpj, :data_nascimento, :celular,
-      :celular, :cep, :logradouro, :cidade, :uf
+      :celular, :cep, :logradouro, :cidade, :uf, :email
     )
   end
 end

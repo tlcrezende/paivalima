@@ -1,5 +1,5 @@
 class ClienteSerializer < ActiveModel::Serializer
-  attributes :id, :nome, :apelido, :cpf_cnpj, :rg, :data_nascimento, :logradouro, :cep, :cidade, :uf, :celular, :contratos, :pagamentos
+  attributes :id, :nome, :apelido, :cpf_cnpj, :rg, :data_nascimento, :logradouro, :cep, :cidade, :uf, :celular, :contratos, :pagamentos, :email
 
   def contratos
     object.contratos.map do |contrato|

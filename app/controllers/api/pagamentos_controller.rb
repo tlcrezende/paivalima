@@ -26,7 +26,7 @@ class Api::PagamentosController < ApplicationController
 
   def update
     if @pagamento.update(pagamento_params)
-      render json: @pagamento
+      render json: { message: "Pagamento atualizado com sucesso!" }
     else
       render json: @pagamento.errors, status: :unprocessable_entity
     end
@@ -44,6 +44,6 @@ class Api::PagamentosController < ApplicationController
     end
 
     def pagamento_params
-      params.require(:pagamento).permit(:data_pagamento, :tipo_pagamento, :valor_pago)
+      params.require(:pagamento).permit(:data_pagamento, :tipo_pagamento, :valor_pago, :observacao)
     end
 end

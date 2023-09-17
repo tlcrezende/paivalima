@@ -1,7 +1,7 @@
 class PagamentoSerializer < ActiveModel::Serializer
   attributes :id, :data_vencimento, :valor, :status, :identificador, 
               :data_pagamento, :nome_cliente, :nome_loteamento, :lote, 
-              :parcela, :data_pagamento, :ordem_carne, :carne, :tipo_pagamento
+              :parcela, :data_pagamento, :ordem_carne, :carne, :tipo_pagamento, :observacao
 
   def nome_cliente
     object.cliente.nome

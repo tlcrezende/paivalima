@@ -19,6 +19,8 @@ class Queries
       left join lotes l on l.id = c2.lote_id
 
       group by c.id
+
+      order by c.nome
     "
     run(query)
   end
@@ -37,6 +39,8 @@ class Queries
       left join pagamentos p on p.contrato_id = c.id
 
       group by l.id
+
+      order by l.nome
     "
     run(query)
   end
@@ -67,6 +71,8 @@ class Queries
       inner join contratos c on c.lote_id = l.id
       left join pagamentos p on p.contrato_id = c.id
       group by l.id, l2.nome, l.numero, l.tamanho, c.valor
+
+      order by l2.nome, l.numero
     "
     run(query)
   end
@@ -82,6 +88,8 @@ class Queries
       inner join pagamentos p on p.contrato_id = c.id
 
       group by c.id, l.id, c2.id, l2.id
+
+      order by c.data_inicio desc
     "
     run(query)
   end
@@ -89,7 +97,7 @@ class Queries
   def self.pagamentos_index
     query = "
       select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
-      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne,  p.tipo_pagamento,
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne,  p.tipo_pagamento, p.observacao,
       (select count(distinct p2.id)  from pagamentos p2
       where p.carne_codigo = p2.carne_codigo
       ) as qtde_parcelas_carne
@@ -100,6 +108,8 @@ class Queries
       inner join loteamentos l2 on l2.id = l.loteamento_id
       WHERE p.soft_deleted = false
       -- and p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '2 months' AND CURRENT_DATE + INTERVAL '3 months';
+
+      order by p.data_vencimento asc
     "
     run(query)
   end
@@ -107,7 +117,7 @@ class Queries
   def self.pagamentos_show(pagamento_id)
     query = "
       select p.id, p.identificador, c2.nome as nome_cliente, l2.nome as nome_loteamento, l.numero as lote, p.valor, p.status, p.data_vencimento,
-      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne, p.tipo_pagamento,
+      concat(p.ordem, ' / ', c.qnt_parcelas) as parcela, p.data_pagamento, p.ordem_carne, p.carne_codigo as carne, p.tipo_pagamento, p.observacao,
       (select count(distinct p2.id)  from pagamentos p2
       where p.carne_codigo = p2.carne_codigo
       ) as qtde_parcelas_carne
