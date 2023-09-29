@@ -4,7 +4,7 @@ class PagamentoSerializer < ActiveModel::Serializer
               :parcela, :data_pagamento, :ordem_carne, :carne, :tipo_pagamento, :observacao
 
   def nome_cliente
-    object.cliente.nome
+    object.contrato.nome
   end
 
   def nome_loteamento

@@ -18,7 +18,6 @@ class LoteSerializer < ActiveModel::Serializer
         **contrato.attributes.symbolize_keys,
         qtde_parcelas_pagas: contrato.pagamentos.filter(&:data_pagamento).size,
         valor_arrecadado: contrato.pagamentos.filter(&:data_pagamento).sum(&:valor_pago) || 0,
-        cliente: contrato.cliente,
         vigente: contrato.pagamentos.filter(&:data_pagamento).size == contrato.pagamentos.size ||
           contrato.pagamentos.filter { |p| p.data_vencimento > Time.zone.now }.size.positive?
       }

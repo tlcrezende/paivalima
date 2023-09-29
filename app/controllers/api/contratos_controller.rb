@@ -67,6 +67,24 @@ class Api::ContratosController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def contrato_params
-    params.require(:contrato).permit(:lote_id, :cliente_id, :data_inicio, :qnt_parcelas, :valor, :observacao, :descricao)
+    params.require(:contrato).permit(
+      :lote_id,
+      :data_inicio, 
+      :datetime, 
+      :qnt_parcelas, 
+      :integer, 
+      :observacao, 
+      :descricao, 
+      :nome, 
+      :apelido, 
+      :cpf_cnpj, 
+      :data_nascimento, 
+      :celular,
+      :celular, 
+      :cep, 
+      :logradouro, 
+      :cidade, 
+      :uf
+    )
   end
 end

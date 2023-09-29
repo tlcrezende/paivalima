@@ -79,17 +79,17 @@ class Queries
 
   def self.contratos_index
     query = "
-      select c.id, c.id contrato_id, c2.nome cliente, concat(l2.nome, ' / ', l.numero) as loteamento_lote, c.data_inicio,
+      select c.id, c.id contrato_id, concat(l2.nome, ' / ', l.numero) as loteamento_lote, c.data_inicio,
       count(p.data_pagamento) as qtde_parcelas_pagas, count(*) as qtde_parcelas, c.valor, c.observacao, c.descricao
       from contratos c
       inner join lotes l on l.id = c.lote_id
-      inner join clientes c2 on c2.id = c.cliente_id
       inner join loteamentos l2 on l2.id = l.loteamento_id
       inner join pagamentos p on p.contrato_id = c.id
 
       group by c.id, l.id, c2.id, l2.id
 
       order by c.data_inicio desc
+      group by c.id, l.id, l2.id
     "
     run(query)
   end
@@ -104,7 +104,6 @@ class Queries
       from pagamentos p
       inner join contratos c on c.id = p.contrato_id
       inner join lotes l on l.id = p.lote_id
-      inner join clientes c2 on c2.id = p.cliente_id
       inner join loteamentos l2 on l2.id = l.loteamento_id
       WHERE p.soft_deleted = false
       -- and p.data_vencimento BETWEEN CURRENT_DATE - INTERVAL '2 months' AND CURRENT_DATE + INTERVAL '3 months';

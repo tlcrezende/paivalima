@@ -25,7 +25,6 @@ class PagamentoLogic
       parcela = (i + 1).to_s.rjust(3, '0')
       pagamentos << {
         contrato_id: @contrato_id,
-        cliente_id: contrato.cliente_id,
         lote_id: contrato.lote_id,
         carne_codigo: carne_codigo,
         ordem_carne: ordem_carne + i,

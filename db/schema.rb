@@ -76,7 +76,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_222143) do
 
   create_table "contratos", force: :cascade do |t|
     t.bigint "lote_id", null: false
-    t.bigint "cliente_id", null: false
     t.datetime "data_inicio"
     t.integer "qnt_parcelas"
     t.datetime "created_at", null: false
@@ -85,7 +84,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_222143) do
     t.string "hennering_code"
     t.string "descricao"
     t.string "observacao"
-    t.index ["cliente_id"], name: "index_contratos_on_cliente_id"
+    t.string "nome"
+    t.string "cpf_cnpj"
+    t.string "data_nascimento"
+    t.string "celular"
+    t.string "logradouro"
+    t.string "cep"
+    t.string "rg"
+    t.string "cidade"
+    t.string "uf"
+    t.string "apelido"
     t.index ["lote_id"], name: "index_contratos_on_lote_id"
   end
 
@@ -125,7 +133,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_222143) do
 
   create_table "pagamentos", force: :cascade do |t|
     t.bigint "contrato_id", null: false
-    t.bigint "cliente_id", null: false
     t.bigint "lote_id", null: false
     t.datetime "data_vencimento"
     t.float "valor"
@@ -142,7 +149,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_222143) do
     t.integer "tipo_pagamento"
     t.float "valor_pago"
     t.string "observacao"
-    t.index ["cliente_id"], name: "index_pagamentos_on_cliente_id"
     t.index ["contrato_id"], name: "index_pagamentos_on_contrato_id"
     t.index ["lote_id"], name: "index_pagamentos_on_lote_id"
   end
@@ -183,12 +189,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_17_222143) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "contratos", "clientes"
   add_foreign_key "contratos", "lotes"
   add_foreign_key "importacoes", "planilhas"
   add_foreign_key "importacoes", "users"
   add_foreign_key "lotes", "loteamentos"
-  add_foreign_key "pagamentos", "clientes"
   add_foreign_key "pagamentos", "contratos"
   add_foreign_key "pagamentos", "lotes"
   add_foreign_key "planilhas", "users"
